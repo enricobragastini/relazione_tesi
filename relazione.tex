@@ -1,0 +1,312 @@
+\documentclass[10pt, a4paper, oneside, titlepage, draft]{article}
+
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+
+% \renewcommand\qedsymbol{QED}
+
+\newtheorem{shrd}{shrd}
+\setcounter{shrd}{0}
+
+\newtheorem{definition}[shrd]{Definition}
+\newtheorem{observation}{Observation}[shrd]
+\newtheorem{theorem}[shrd]{Theorem}
+\newtheorem{example}[shrd]{Example}
+\newtheorem{lemma}[shrd]{Lemma}
+
+
+\title{Investigating the\\Generalization of Rice's Theorem}
+\author{Enrico Bragastini}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+In Computability, Rice's theory in its classical form hides more information 
+of what is usually expressed in their respective statements. 
+More recent work made this information explicit, allowing to state stronger 
+complexity theoretic-versions of the theorem; this was done by replacing the notion 
+of extensional set of indices of programs, with a set of indices of programs having 
+not only the same extensional behavior, but also similar complexity (Complexity Clique), 
+proving, under very weak complexity assumptions, that any recursive Complexity Clique is trivial. 
+
+In this thesis we modify the definition of complexity measure, on which Complexity Cliques are based, to give a measure in the of programs that do not converge. We observe how this affects the behavior of Complexity Cliques and the generalization of Rice's theorem.
+\end{abstract}
+
+\section{Introduction}
+Most classical results in Computability Theory focus on the so-called \textit{extensional properties} of programs, i.e. properties of the partial functions they compute.
+Among intensional properties of programs, a major role is played by \textit{complexity}.
+The theoretical research on effective properties of recursive functions under complexity assumptions focused, since the very beginning, on complexity classes, that is classes of recursive functions computable (almost everywhere) within a given bound of complexity t.
+It is important to understand that a \textit{complexity class} is a set of functions and not of indices; regarded as a set of indices, it is thus extensional by definition.
+
+Asperti, in his 2008 paper on \textit{The Intensional Content of Rice's Theorem}, proposed the notion of \textit{Complexity Cliques}, as an instrument to study decidability properties of program complexity.
+A \textit{Complexity Clique} is a set of indices for recursive functions closed w.r.t. indices of functions with same extension and similar complexity (defined in the only sensible way, namely up to constants).
+Asperti based this definition on the framework proposed by Blum (Blum 1967), in particular the definition of \textit{computational complexity measure}, with the intention of sticking to the generality of Blum's axiomatic approach, although that was not the focus of the paper.
+
+In this thesis we redefine the definition of \textit{Computational Complexity Measure}, changing the first of Blum's axioms so that we may have complexity measures even if the program does not halt. This may only work identifying thresholds beyond which complexity is considered infinite of maximum. Then we study how the modified definition affects Asperti's approach up the generalization of Rice's Theorem.
+
+\section{Similarity and Complexity Cliques}
+We shall work with $n$-ary partial recursive functions over natural numbers. If $f$ is such a partial function, $dom(f)$ and $cod(f)$ respectively denote the domain and range of $f$. We write $f(n)\downarrow$ if $n \in dom(f)$. We use $\bot$ for the everywhere divergent function, that is $dom(\bot) = \emptyset$. Given two function $f$ and $g$, we write $f \cong g$ when $f$ and $g$ have the same graph, i.e. $dom(f)=dom(g)$ and for any $n \in dom(f)$, $f(n)=g(n)$. We say a function is finite if it has a finite graph (i.e. $dom(f)$ is a finite set). Partial functions are ordered w.r.t. the set-teoretic inclusion of their graphs: $f \le g$ if and only if $graph(f) \subseteq graph(g)$. $\omega$ is the set of all natural numbers.
+
+\begin{definition}
+    Let $f$ and $g$ be partial functions on natural numbers:
+    \begin{enumerate}
+        \item we say $f \in O(g)$ if and only if there exist $n$ and $c$ such that for any $m \ge n$, if $g(m)\downarrow$ then $f(m) \le gc(m)$
+        \item $f \in \Theta(g)$ if and only if $f \in O(g)$ and $g \in O(f)$
+    \end{enumerate}
+\end{definition}
+
+Note that if $f \in \Theta(g)$ the domains of $f$ and $g$ may only differ for a finite number of points.
+Let us also remark that, $f \in \Theta(g)$ if and only if $g \in \Theta(f)$; in particular $f \in \Theta(g)$ is an equivalence relation.
+
+\begin{definition}
+    A pair $\langle \phi, \Phi \rangle$ is a \textit{computational complexity measure} if $\phi$ is a principal effective enumeration of partial recursive functions and $\Phi$ satisfies the following axioms: 
+    \begin{enumerate}[label=(\alph*)]
+        \item $ \phi_i(\vec{n})\downarrow \ \Rightarrow \ \Phi_i(\vec{n}) \downarrow $ 
+        \item \textit{the predicate $ \Phi_i(\vec{n}) = m $ is decidable}
+    \end{enumerate}
+\end{definition}
+
+
+\begin{observation}
+    This definition differs from the one on Asperti's paper. On Asperti's paper the definition is based on Blum's axioms, where axiom (a) is defined as \ $\phi_i(\vec{n})\downarrow \ \iff \ \Phi_i(\vec{n}) \downarrow$. The rest is unchanged.
+
+    With this \textit{weakening}, the definition admits computational complexity measures even if the program does not terminate. It may do this, for example, by giving an infinity complexity measure above a certain threshold. This implies that $dom(\phi_i) \subseteq dom(\Phi_i)$. We may now find new pairs $\langle \phi, \Phi \rangle$ that fall within our definition.
+\end{observation}
+
+We say two programs are similar when they compute the same function and have the same complexity, up to constants:
+
+\begin{definition}
+    Two programs $i$ and $j$ are similar (write $i \approx j$) if and only if
+    \begin{equation*}
+        \phi_j \cong \phi_i \ \wedge \ \Phi_j \in \Theta(\Phi_i)
+    \end{equation*}
+\end{definition}
+
+\begin{observation}
+    With our modified version of computational complexity measure, more pairs fall within the definition. Similarity is still possible but note that it has slightly different implications. 
+    Previously, because $\phi_i(\vec{n})\downarrow \iff \Phi_i(\vec{n})\downarrow$, we had
+    \begin{equation*}
+        dom(\Phi_i) = dom(\phi_i) = dom(\phi_j) = dom(\Phi_j)
+    \end{equation*}
+    Now, with $\phi_i(\vec{n}) \downarrow \ \Rightarrow \Phi_i(\vec{n})\downarrow$, we have
+    \begin{equation*}
+        dom(\Phi_i) \supseteq dom(\phi_i) = dom(\phi_j) \subseteq dom(\Phi_j)
+    \end{equation*}
+    This does not create contradictions with the definitions similarity is based on:
+    \begin{itemize}
+        \item similarity does not require $\phi_i(\vec{n})\downarrow \iff \Phi_i(\vec{n})\downarrow$, because $\phi_j \approx \phi_i$ is evaluated separately from $ \Phi_j \in \Theta(\Phi_i)$;
+        \item if $\Phi_j \in \Theta(\Phi_i)$, the domains of $\Phi_j$ and $\Phi_i$ \textbf{may} only differ for a finite number of points, thus no contradiction is created. 
+    \end{itemize}
+\end{observation}
+
+\begin{theorem}
+    Similarity is an equivalence relation.
+\end{theorem}
+
+\begin{proof}
+    Obvious, since similarity is defined as intersection of two equivalence relations.
+\end{proof}
+
+\noindent We shall write $[ i ]_{\approx}$ for the equivalence class of $i$ w.r.t. the similarity relation $\approx$.
+
+\begin{definition}
+    Let $\langle \phi, \Phi \rangle$ be an abstract complexity measure. A set $P$ of natural numbers is a \emph{Complexity Clique}, if and only if for all $i$ and $j$
+    \begin{equation*}
+        i \in P \wedge j \approx i \Rightarrow j \in P
+    \end{equation*}
+\end{definition}
+
+\begin{observation}
+    This definition is based on the weakened definition of complexity measure. We may now find new sets that fall within the Complexity Cliques definition which were not included in the original definition.
+\end{observation}
+
+\begin{example}
+    The following are examples of Complexity Cliques:
+    \begin{enumerate}
+        \item $\emptyset$ and $\omega$;
+        \item for any index $i$, $[i]_{\approx}$;
+        \item for any index $i$, $\{ j | \Phi_j \in O(\Phi_i) \}$ 
+    \end{enumerate}
+    On the other side, the set $ \{ i | \Phi_i(a) = b \} $ (i.e. the programs whose complexity on input $a$ is $b$) is not a Complexity Clique, in general.
+\end{example}
+
+\begin{observation}
+    All of these examples are still valid, since the modified axioms create a weaker and wider Complexity Cliques definition.
+\end{observation}
+
+\section{Simple properties of Complexity Cliques}
+A set $A \subset \omega$ of indices is \emph{extensional} if, for all $i$ and $j$, $i \in A \wedge \phi_i \cong \phi_j \Rightarrow j \in A$; This is equivalent to say that A is the counter-image (index-set) under $\phi$ of some subset of partial recursive functions.
+
+The notion of Complexity Clique is a strict generalization of the notion of \emph{extensional set} well known in computability theory:
+
+\begin{theorem}
+    Every extensional set is a Complexity Clique
+\end{theorem}
+
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{observation}
+    This remains valid as we expanded the definition of Complexity Cliques. Therefore extensional sets are still included in the weaker Complexity Clique definition.
+\end{observation}
+
+Of course, the converse is not true: for instance, the class of programs with polynomial complexity is not extensional.
+
+Any Complexity Clique is a union of similarity classes, in particular:
+
+\begin{theorem}
+    C is a Complexity Clique if and only if
+    \begin{equation*}
+        C = \bigcup_{i \in C} [i]_{\approx}
+    \end{equation*}
+\end{theorem}
+
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{observation}
+    This theorem exploits the similarity relation found in the Complexity Clique definition. As long as we accept the altered axiom for the complexity measure definition, this remains valid.
+\end{observation}
+
+As a consequence, Complexity Cliques have very good algebraic properties; in particular:
+\begin{theorem}
+    Complexity Cliques, equipped with the subset relation, are a Complete Boolean Lattice
+\end{theorem}
+\begin{proof}
+    Just note that $\overline{C} = \bigcup_{i \in \overline{C}}[i]_{\approx}$. The rest is easy.
+\end{proof}
+
+\begin{observation}
+    As before, as long as we accept the altered axiom for the complexity measure definition, the theorem remains valid.
+\end{observation}
+
+The good set-theoretic properties of Complexity Cliques are to be compared with the very bad properties of Complexity Classes (stressing again the strong difference between the two notions). In particular:
+\begin{enumerate}
+    \item for any complexity measure, Complexity Classes are not closed under union (Hartmanis and Stearns 1965; McCreight and Meyer 1969);
+    \item there are complexity measures whose Complexity Classes are not closed under intersection \footnote{An important exception are measures satisfying the parallel computation
+    property (Landweber and Robertson 1972)} (Landweber and Robertson 1972)
+\end{enumerate}
+
+Let us finally remark an important property about finite functions.
+
+\begin{theorem}
+    Let $C$ be a Complexity Class and let $i \in C$. If $\phi_i$ is finite, then for any $j$ such that $\phi_i \cong \phi_j$, $j \in C$
+\end{theorem}
+
+\begin{proof}
+    For finite functions, extensional equivalence implies similarity.
+\end{proof}
+
+\section{Generalized Rice's Theorem}
+
+\begin{definition}
+    A pair $\langle \phi, \Phi \rangle$ has the \emph{s-m-n property} if for all positive natural numbers $m$ and $n$ there exists a recursive function $s_m^n$ such that, for all $i$ and all $x_1, \dots, x_m$ 
+    \begin{enumerate}[label=(\alph*)]
+        \item $ \phi_{s_m^n (i,x_1,\dots,x_m)} \cong \lambda y_1,\dots,y_n . \phi_i (x_1,\dots,x_m,y_1,\dots,y_n)  $
+        \item $ \Phi_{s_m^n (i,x_1,\dots,x_m)} \in  \Theta(\lambda y_1,\dots,y_n . \Phi_i (x_1,\dots,x_m,y_1,\dots,y_n))  $
+    \end{enumerate}
+\end{definition}
+
+Equation (a) is the standard \emph{s-m-n} theorem, while equation (b) states that the overhead introduced by the function $s_m^n$ is at most a constant factor: in fact, in standard computational models, it amounts to the cost of copying the (fixed) parameters $x_1,\dots,x_m$ and then calling $\phi_i$ - see e.g. Cutland (1986); Börger (1986); Odifreddi (1997)
+
+\begin{observation}
+    The s-m-n properti does not require $\phi_i(\vec{n})\downarrow \ \Leftarrow \ \Phi_i(\vec{n})\downarrow$, therefore is still valid.
+\end{observation}
+
+Since the set of recursive functions is still closed under composition, by the \emph{s-m-n theorem} we may conclude that there exists a total computable function $h$ such that $\phi_{h(i,j)} \cong \phi_i \circ \phi_j $. Axioms relating the complexity of $h(i,j)$ to the complexity of its components have been considered by Lischke (1975, 1976, 1977). For the purposes of our analysis, we need a tight bound:
+
+\begin{definition}
+    A pair $\langle \phi, \Phi \rangle$ has the (linear) time-composition property if there exists a total computable function h such that 
+    \begin{enumerate}[label=(\alph*)]
+        \item $ \phi_{h(i,j)} \cong \phi_i \circ \phi_j $
+        \item $ \Phi_{h(i,j)} \in \Theta(\Phi_i \circ \phi_j + \Phi_j) $
+    \end{enumerate}
+    We say that it has the (linear) space-composition property if equation (b) is replaced by
+    \begin{enumerate}[label=(c)]
+        \item $ \Phi_{h(i,j)} \in \Theta(max \{ \Phi_i \circ \phi_j, \Phi_j \}) $
+    \end{enumerate}
+\end{definition}
+
+\noindent Equation $(b)$ says that the cost for computing $\phi_i(\phi_j(x))$ is, up to a constant factor, no more than the cost for computing $\phi_j(x)$ plus the cost for computing $\phi_i$ on $\phi_j(x)$. Similarly, the space required for the same computation is the maximum among the space required for computing $\phi_j(x)$ and the space required for computing $\phi_i$ on input $\phi_j(x)$. 
+
+\begin{observation}
+    These properties do not rely on $\phi_i(\vec{n})\downarrow \iff \Phi_i(\vec{n})\downarrow$ since $\phi_{h(i,j)}$ and $\Phi_{h(i,j)}$ are taken into account separately. Also note that $\Phi_i \circ \phi_i$ does not relay on that axiom too; and it does not even indicate a connection between the termination of $\phi_j(\vec{n})$ and the termination of $\Phi_i(\vec{n})$.
+    \\ The (linear) time-composition property and the (linear) space-composition property can be applied to pairs $\langle \phi, \Phi \rangle$ just as before, including pairs that fall into the modified definition of complexity measure.
+\end{observation}
+
+The previous equations may be extended to n-ary composition, provided that input variables are linearly partitioned among the components; if duplication of some input is required, we should eventually take this cost into account, adding a linear overhead. A particular case of (multi-variable) linear composition of fre- quent use in computability theory is sequencing with absence of communication, i.e. the case of a function
+
+\begin{equation*}
+    \phi_{g(i,j)}(x,y) = \phi_j(x);\phi_i(y) = 
+    \begin{cases}
+        \phi_i(y)   & \text{if } \phi_j(y)\downarrow    \\
+        \bot        & \text{otherwhise}
+    \end{cases}
+\end{equation*}
+
+\noindent The aim is to merely force the evaluation of $\phi_j(x)$ before computing $\phi_i(y)$. According to our definitions
+\begin{equation*}
+    \Phi_{g(i,j)} \in \Theta ( \lambda xy . ( \Phi_j(x) + \Phi_i(y) ) )
+\end{equation*}
+for time and
+\begin{equation*}
+    \Phi_{g(i,j)} \in \Theta ( \lambda xy . max \{ \Phi_j(x) , \Phi_i(y) \} )
+\end{equation*}
+for space.
+
+In combination with the \emph{s-m-n} property, fixing the parameter x, we have, for both time and space:
+
+\begin{lemma}
+    There exists a total computable function c such that:
+    \begin{enumerate}[label=(\alph*)]
+        \item $
+            \begin{cases}
+                \phi_{c(i,j,x)}(y) = \phi_i(y)  & \text{if  } \phi_j(x)\downarrow \\
+                \phi_{c(i,j,x)}(y) = \bot       & otherwhise
+            \end{cases}
+        $
+
+        \item $
+            \begin{cases}
+                \Phi_{c(i,j,x)}(y) \in \Theta ( \Phi_i )  & \text{if  } \phi_j(x)\downarrow \\
+                \Phi_{c(i,j,x)}(y) = \bot       & otherwhise
+            \end{cases}
+        $
+    \end{enumerate}
+\end{lemma}
+
+In fact, the previous Lemma is all we need for the generalization of Rice's Theorem to Complexity Cliques.
+
+\begin{observation}
+    The lemma applies equally to the modified definition of complexity measure, as in both $(a)$ and $(b)$ we find the condition $\phi_j(x)\downarrow$, therefore it does not require $\phi_i(\vec{n}) \Leftarrow \Phi_i(\vec{n})\downarrow$. If the lemma still applies, then we can proceed generalizing of Rice's theorem to Complexity Cliques with a weaker complexity measure.
+\end{observation}
+
+\begin{theorem}
+    Under the s-m-n (Def. 11) and the linear-composition (Def. 12) assumptions (either in time or space), a Complexity Clique P is recursive if and only if it is trivial, i.e. $P = \emptyset \vee P = \omega$.
+\end{theorem}
+
+\begin{proof}
+    Assume P is recursive and let $\phi_p$ be its characteristic function. 
+    Suppose P is not trivial:
+    \begin{equation*}
+        P \in REC \wedge (P \neq \emptyset \wedge P \neq \omega)
+    \end{equation*}
+    So there exist $a$ and $b$ such that $\phi_p(a) = 1$ and $\phi_p(b) = 0$.
+    Let m be the index of a program computing the everywhere divergent function: $\forall n \in \mathbb{N} : \phi_m(n) \uparrow$.
+    Either $\phi_p(m) = 1$ or $\phi_p(m) = 0$. Let us consider the latter case, the other one being analogous. \par
+    Let K be a r.e. non recursive set, and let $\phi_k$ be its semi-decision function, i.e. $dom(\phi_k) = \mathcal{K}$ . Consider the following function
+    \begin{equation*}
+        f(x,y) = \phi_k(x); \phi_a(y)
+    \end{equation*}
+\end{proof}
+
+\end{document}
