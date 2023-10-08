@@ -175,6 +175,10 @@ The notion of Complexity Clique is a strict generalization of the notion of \emp
 
 Of course, the converse is not true: for instance, the class of programs with polynomial complexity is not extensional.
 
+\begin{observation}
+    This remains the same, as we may still have Complexity Cliques containing programs that are similar in complexity but do not compute the same functions, making them non-extensional. The set $\{j|\Phi_j \in O(\Phi_i)\}$ is a clear example.
+\end{observation}
+
 Any Complexity Clique is a union of similarity classes, in particular:
 
 \begin{theorem}
@@ -184,12 +188,26 @@ Any Complexity Clique is a union of similarity classes, in particular:
     \end{equation*}
 \end{theorem}
 
-\begin{proof}
-    Trivial.
+\begin{proof}   $(\Rightarrow)$
+    \begin{enumerate}
+        \item Let $C$ be a Complexity Clique.
+        \item For each $i \in C$, the equivalence class of $i$ w.r.t. the similarity relation $\approx$, $[i]_{\approx}$, consists of all $j$ such that $j \approx i$, i.e. $i$ and $j$ are similar.
+        \item By the definition of Complexity Clique, if $i\in C$ and $j \approx i$, then $j \in C$. This implies that $[i]_{\approx} \subseteq C$.
+        \item Therefore, $\bigcup_{i\in C}[i]_{\approx} \subseteq C$
+    \end{enumerate}
+\end{proof}
+
+\begin{proof}   $(\Leftarrow)$
+    \begin{enumerate}
+        \item Let $C = \bigcup_{i \in C}[i]_{\approx}$ and let $j \in C$.
+        \item Since $C = \bigcup_{i \in C}[i]_{\approx}$, then $j$ must be in some of those $[i]_{\approx}$.
+        \item Being $j \in [i]_{approx}$ means that $j \approx i$.
+        \item Since $i \in C$, $j \approx i$ and $j \in C$, this satisfies the condition for $C$ to be a Complexity Clique
+    \end{enumerate}
 \end{proof}
 
 \begin{observation}
-    This theorem exploits the similarity relation found in the Complexity Clique definition. As long as we accept the altered axiom for the complexity measure definition, this remains valid.
+    This theorem uses the concept of equivalence class w.r.t. the similarity relation $\approx$ found in the Complexity Clique definition. As long as we accept the altered axiom for computational complexity measure, and the similarly relation, this theorem remains valid.
 \end{observation}
 
 As a consequence, Complexity Cliques have very good algebraic properties; in particular:
