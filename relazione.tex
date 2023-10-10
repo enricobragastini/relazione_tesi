@@ -1,5 +1,6 @@
 \documentclass[10pt, a4paper, oneside, titlepage, draft]{article}
 
+
 \usepackage[english]{babel}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -252,7 +253,7 @@ Let us finally remark an important property about finite functions.
 Equation (a) is the standard \emph{s-m-n} theorem, while equation (b) states that the overhead introduced by the function $s_m^n$ is at most a constant factor: in fact, in standard computational models, it amounts to the cost of copying the (fixed) parameters $x_1,\dots,x_m$ and then calling $\phi_i$ - see e.g. Cutland (1986); Börger (1986); Odifreddi (1997)
 
 \begin{observation}
-    The s-m-n property does not require $\phi_i(\vec{n})\downarrow \ \Leftarrow \ \Phi_i(\vec{n})\downarrow$, therefore is still valid.
+    The s-m-n property takes $\phi_{s_m^n}$ and $\Phi_{s_m^n}$ into account separately and therefore it does not require $\phi_{s_m^n}(\vec{n})\downarrow \iff \Phi_{s_m^n}(\vec{n})\downarrow$.
 \end{observation}
 
 Since the set of recursive functions is still closed under composition, by the \emph{s-m-n theorem} we may conclude that there exists a total computable function $h$ such that $\phi_{h(i,j)} \cong \phi_i \circ \phi_j $. Axioms relating the complexity of $h(i,j)$ to the complexity of its components have been considered by Lischke (1975, 1976, 1977). For the purposes of our analysis, we need a tight bound:
@@ -272,8 +273,9 @@ Since the set of recursive functions is still closed under composition, by the \
 \noindent Equation $(b)$ says that the cost for computing $\phi_i(\phi_j(x))$ is, up to a constant factor, no more than the cost for computing $\phi_j(x)$ plus the cost for computing $\phi_i$ on $\phi_j(x)$. Similarly, the space required for the same computation is the maximum among the space required for computing $\phi_j(x)$ and the space required for computing $\phi_i$ on input $\phi_j(x)$. 
 
 \begin{observation}
-    These properties do not rely on $\phi_i(\vec{n})\downarrow \iff \Phi_i(\vec{n})\downarrow$ since $\phi_{h(i,j)}$ and $\Phi_{h(i,j)}$ are taken into account separately. Also note that $\Phi_i \circ \phi_i$ does not relay on that axiom too; and it does not even indicate a connection between the termination of $\phi_j(\vec{n})$ and the termination of $\Phi_i(\vec{n})$.
-    \\ The (linear) time-composition property and the (linear) space-composition property can be applied to pairs $\langle \phi, \Phi \rangle$ just as before, including pairs that fall into the modified definition of complexity measure.
+    Equation $(a)$ is about computability and not complexity, so it remains unchanged. In equations $(b)$ and $(c)$, an impact of the weakening of the first axiom could be assessed if $\Phi_i(\vec{n})$ or $\Phi_j(\vec{n})$ give values where $\phi_i(\vec{n})$ or $\phi_j(\vec{n})$ are undefined. However if $\phi_i(\vec{n})$ or $\phi_j(\vec{n})$ are undefined, $\Phi_i(\vec{n})$ or $\Phi_j(\vec{n})$ would result in some kind of infinity complexity, thus making $\Phi_{h(i,j)}$ return an infinite complexity value.
+    
+    This means that the properties of (linear) time and space composition can be applied to pairs $\langle \phi,\Phi \rangle$ just as before, including pairs that fall within the new definiton of complexity measure.
 \end{observation}
 
 The previous equations may be extended to n-ary composition, provided that input variables are linearly partitioned among the components; if duplication of some input is required, we should eventually take this cost into account, adding a linear overhead. 
@@ -283,7 +285,7 @@ A particular case of (multi-variable) linear composition of frequent use in comp
 \begin{equation*}
     \phi_{g(i,j)}(x,y) = \phi_j(x);\phi_i(y) = 
     \begin{cases}
-        \phi_i(y)   & \text{if } \phi_j(y)\downarrow    \\
+        \phi_i(y)   & \text{if } \phi_j(x)\downarrow    \\
         \bot        & \text{otherwise}
     \end{cases}
 \end{equation*}
@@ -301,7 +303,7 @@ for space.
 In combination with the \emph{s-m-n} property, fixing the parameter x, we have, for both time and space:
 
 \begin{lemma}
-    There exists a total computable function c such that:
+    Let $m$ be the index of a program computing the everywhere divergent function. There exists a total computable function c such that:
     \begin{enumerate}[label=(\alph*)]
         \item $
             \begin{cases}
@@ -313,17 +315,24 @@ In combination with the \emph{s-m-n} property, fixing the parameter x, we have, 
         \item $
             \begin{cases}
                 \Phi_{c(i,j,x)}(y) \in \Theta ( \Phi_i )  & \text{if  } \phi_j(x)\downarrow \\
-                \Phi_{c(i,j,x)}(y) = \bot       & otherwise
+                \Phi_{c(i,j,x)}(y) = \Phi_m(y)       & otherwise
             \end{cases}
         $
     \end{enumerate}
 \end{lemma}
 
-In fact, the previous Lemma is all we need for the generalization of Rice's Theorem to Complexity Cliques.
 
 \begin{observation}
-    The lemma applies equally to the modified definition of complexity measure, as in both $(a)$ and $(b)$ we find the condition $\phi_j(x)\downarrow$, therefore it does not require $\phi_i(\vec{n}) \Leftarrow \Phi_i(\vec{n})\downarrow$. If the lemma still applies, then we can proceed generalizing of Rice's theorem to Complexity Cliques with a weaker complexity measure.
+    This lemma needed a slight modification from the original one in Asperti's paper. In particular, the complexity $\Phi_{c(i,j,k)}(y)$, with the modified complexity measure definition, can't be equal to $\bot$. It is actually equal to the complexity of a program computing the everywhere divergent function.
 \end{observation}
+
+\begin{observation}
+    This lemma is compatible with our modified definition of computational complexity measure. In particular, if $\phi_j(x)$ terminates, nothing changes for $\phi$ and $\Phi$ from the standard complexity measure definition.
+
+    If $\phi_j(x)$ does not terminate, $\phi_{c(i,j,k)}(y)$ is equal the everywhere divergent function and $\Phi_{c(i,j,k)}(y)$ is equal to the complexity assigned to divergent programs.
+\end{observation}
+
+In fact, the previous Lemma is all we need for the generalization of Rice's Theorem to Complexity Cliques.
 
 \begin{theorem}
     Under the s-m-n (Def. 11) and the linear-composition (Def. 12) assumptions (either in time or space), a Complexity Clique P is recursive if and only if it is trivial, i.e. $P = \emptyset \vee P = \omega$.
@@ -331,14 +340,14 @@ In fact, the previous Lemma is all we need for the generalization of Rice's Theo
 
 \begin{proof}
     Assume P is recursive and let $\phi_p$ be its characteristic function. 
-    Suppose P is not trivial:
-    \begin{equation*}
-        P \in REC \wedge (P \neq \emptyset \wedge P \neq \omega)
-    \end{equation*}
+    Suppose P is not trivial: $P \in REC \wedge (P \neq \emptyset \wedge P \neq \omega)$
+
     So there exist $a$ and $b$ such that $\phi_p(a) = 1$ and $\phi_p(b) = 0$.
     Let m be the index of a program computing the everywhere divergent function: $\forall n \in \mathbb{N} : \phi_m(n) \uparrow$.
-    Either $\phi_p(m) = 1$ or $\phi_p(m) = 0$. Let us consider the latter case, the other one being analogous. \par
-    Let K be a r.e. non recursive set, and let $\phi_k$ be its semi-decision function, i.e. $dom(\phi_k) = \mathcal{K}$ . Consider the following function 
+    Either $\phi_p(m) = 1$ or $\phi_p(m) = 0$. Let us consider the latter case, the other one being analogous.
+    Let K be a r.e. non recursive set, and let $\phi_k$ be its semi-decision function, i.e. $dom(\phi_k) = \mathcal{K}$ . 
+    
+    Consider the following function 
     \begin{equation*}
         f(x,y) = \phi_k(x); \phi_a(y)
     \end{equation*}
@@ -346,15 +355,15 @@ In fact, the previous Lemma is all we need for the generalization of Rice's Theo
     \begin{enumerate}[label=(\alph*)]
         \item $
             \begin{cases}
-                \phi_{c(a,k,x)}(y) = \phi_a(y)  & \text{if  } x \in \mathcal{K} \\
-                \phi_{c(a,k,x)}(y) = \bot = \phi_m(y)       & otherwise
+                \phi_{c(a,k,x)}(y) = \phi_a(y)                  & \text{if  } x \in \mathcal{K} \\
+                \phi_{c(a,k,x)}(y) = \bot = \phi_m(y)           & otherwise
             \end{cases}
         $
 
         \item $
             \begin{cases}
-                \Phi_{c(a,k,x)}(y) \in \Theta ( \Phi_a )  & \text{if  } x \in \mathcal{K} \\
-                \Phi_{c(a,k,x)}(y) = \bot = \Phi_m(y)       & otherwise
+                \Phi_{c(a,k,x)}(y) \in \Theta (\Phi_a)    & \text{if  } x \in \mathcal{K} \\
+                \Phi_{c(a,k,x)}(y) = \Phi_m(y)              & otherwise
             \end{cases}
         $
     \end{enumerate}
