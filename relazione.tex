@@ -19,7 +19,7 @@
 \newtheorem{lemma}[shrd]{Lemma}
 
 
-\title{Investigating the\\Generalization of Rice's Theorem}
+\title{Study on the\\Generalization of Rice's Theorem}
 \author{Enrico Bragastini}
 \date{}
 
@@ -59,6 +59,8 @@ We shall work with $n$-ary partial recursive functions over natural numbers. If 
 
 Note that if $f \in \Theta(g)$ the domains of $f$ and $g$ may only differ for a finite number of points.
 
+\newpage
+
 \begin{observation}
     This is true because $f \in \Theta(g) \Rightarrow f \in O(g) \wedge g \in O(f)$, then:
     \begin{itemize}
@@ -70,7 +72,7 @@ Note that if $f \in \Theta(g)$ the domains of $f$ and $g$ may only differ for a 
         \item for all $m \ge n$, if $g(m)\downarrow$, then $f(m)$ must be defined because $ g(m)\downarrow \Rightarrow f(m) \le c_1g(m)$;
         \item similarly, for all $m \ge n$, if $f(m) \downarrow$, then $g(m)$ must be defined because $f(m) \downarrow \Rightarrow g(m) \le c_2f(m)$.
     \end{itemize}
-    Therefore, beyond $max\{n_1, n_2\}$, $f(m) \downarrow \iff g(m)$. With $m < max\{n_1, n_2\}$, $f(m)$ and $g(m)$ can differ in their domains. However, since $n_1$ and $n_2$ are finite, the domains can only differ for a finite number of points.
+    Therefore, beyond $max\{n_1, n_2\}$, $f(m) \downarrow \iff g(m) \downarrow$. With $m < max\{n_1, n_2\}$, $f(m)$ and $g(m)$ can differ in their domains. However, since $n_1$ and $n_2$ are finite, the domains can only differ for a finite number of points.
 \end{observation}
 
 Let us also remark that, $f \in \Theta(g)$ if and only if $g \in \Theta(f)$; in particular $f \in \Theta(g)$ is an \emph{equivalence relation}.
@@ -131,7 +133,7 @@ We say two programs are \emph{similar} when they compute the same function and h
 \end{definition}
 
 \begin{observation}
-    This definition is based on the definition of computational complexity masure we have changed and on the definition of similarity build on top of it. We may now find new Complexity Cliques that fall within this definition that were not included in the original definition.
+    This definition is based on the definition of computational complexity masure we have changed and on the definition of similarity built on top of it. We may now find new Complexity Cliques that fall within this definition that were not included in the original definition.
     
     Despite this, the concept of Complexity Clique remains valid: if $i$ is program already in a Compexity Clique $P$, every program $j$ similar to $i$ (according to our modified definition), is in $P$, whether or not their $\Phi$-functions are defined on inputs where their $\phi$-functions are not.
 \end{observation}
@@ -192,7 +194,7 @@ Any Complexity Clique is a union of similarity classes, in particular:
 \begin{proof}   $(\Rightarrow)$
     \begin{enumerate}
         \item Let $C$ be a Complexity Clique.
-        \item For each $i \in C$, the equivalence class of $i$ w.r.t. the similarity relation $\approx$, $[i]_{\approx}$, consists of all $j$ such that $j \approx i$, i.e. $i$ and $j$ are similar.
+        \item For each $i \in C$, the equivalence class of $i$ w.r.t. the similarity relation, $[i]_{\approx}$, consists of all $j$ such that $j \approx i$.
         \item By the definition of Complexity Clique, if $i\in C$ and $j \approx i$, then $j \in C$. This implies that $[i]_{\approx} \subseteq C$.
         \item Therefore, $\bigcup_{i\in C}[i]_{\approx} \subseteq C$
     \end{enumerate}
@@ -202,7 +204,7 @@ Any Complexity Clique is a union of similarity classes, in particular:
     \begin{enumerate}
         \item Let $C = \bigcup_{i \in C}[i]_{\approx}$ and let $j \in C$.
         \item Since $C = \bigcup_{i \in C}[i]_{\approx}$, then $j$ must be in some of those $[i]_{\approx}$.
-        \item Being $j \in [i]_{approx}$ means that $j \approx i$.
+        \item Being $j \in [i]_{\approx}$ means that $j \approx i$.
         \item Since $i \in C$, $j \approx i$ and $j \in C$, this satisfies the condition for $C$ to be a Complexity Clique
     \end{enumerate}
 \end{proof}
